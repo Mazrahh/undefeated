@@ -3,35 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #111;
-        }
-        #qrcode {
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-        }
-    </style>
+    <title>Home</title>
 </head>
 <body>
-    <div id="qrcode"></div>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <script>
-        new QRCode(document.getElementById("qrcode"), {
-            text: "f9a2e4c7-3b81-4d6f-92ae-7c503d1b8e45",
-            width: 300,
-            height: 300,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
-    </script>
+    Home
 </body>
 </html>
