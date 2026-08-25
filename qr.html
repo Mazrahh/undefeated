@@ -37,6 +37,31 @@
             background: #fff;
             border-radius: 8px;
         }
+        main {
+            flex-direction: column;
+            gap: 16px;
+        }
+        #lock-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        #lock-icon {
+            font-size: 3rem;
+        }
+        #lock-label {
+            font-size: 1.1rem;
+            color: #aaa;
+        }
+        #countdown {
+            font-size: 2.5rem;
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+        }
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -45,18 +70,71 @@
         <a href="qr.html" class="active">QR</a>
     </nav>
     <main>
-        <div id="qrcode"></div>
+        <div id="qrcode" class="hidden"></div>
+        <div id="lock-screen" class="hidden">
+            <div id="lock-icon">🔒</div>
+            <div id="lock-label">Unlocks in</div>
+            <div id="countdown">--:--:--</div>
+        </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script>
-        new QRCode(document.getElementById("qrcode"), {
-            text: "f9a2e4c7-3b81-4d6f-92ae-7c503d1b8e45",
-            width: 300,
-            height: 300,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
+        const qrEl = document.getElementById("qrcode");
+        const lockEl = document.getElementById("lock-screen");
+        const countdownEl = document.getElementById("countdown");
+        let qrRendered = false;
+
+        function pad(n) {
+            return n.toString().padStart(2, "0");
+        }
+
+        function getUnlockWindow(now) {
+            const start = new Date(now);
+            start.setHours(6, 0, 0, 0);
+            const end = new Date(now);
+            end.setHours(6, 10, 0, 0);
+            return { start, end };
+        }
+
+        function update() {
+            const now = new Date();
+            const { start, end } = getUnlockWindow(now);
+            const unlocked = now >= start && now < end;
+
+            if (unlocked) {
+                lockEl.classList.add("hidden");
+                qrEl.classList.remove("hidden");
+                if (!qrRendered) {
+                    new QRCode(qrEl, {
+                        text: "f9a2e4c7-3b81-4d6f-92ae-7c503d1b8e45",
+                        width: 300,
+                        height: 300,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    qrRendered = true;
+                }
+                return;
+            }
+
+            qrEl.classList.add("hidden");
+            lockEl.classList.remove("hidden");
+
+            let next = start;
+            if (now >= end) {
+                next = new Date(start);
+                next.setDate(next.getDate() + 1);
+            }
+            const diff = next - now;
+            const hours = Math.floor(diff / 3600000);
+            const mins = Math.floor((diff % 3600000) / 60000);
+            const secs = Math.floor((diff % 60000) / 1000);
+            countdownEl.textContent = `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+        }
+
+        update();
+        setInterval(update, 1000);
     </script>
 </body>
 </html>
