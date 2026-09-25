@@ -1,0 +1,9 @@
+name = "unbeatable-qr"
+main = "worker.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+TIMEZONE = "Europe/London"
+
+# The QR payload is a secret, set with:
+#   npx wrangler secret put QR_SECRET
